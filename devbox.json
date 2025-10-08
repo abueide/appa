@@ -1,0 +1,14 @@
+{
+  "$schema":  "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
+  "packages": ["rustup@latest"],
+  "shell": {
+    "init_hook": [
+      "rustup default stable",
+      "cargo fetch 2>/dev/null || true"
+    ],
+    "scripts": {
+      "test": "cargo test",
+      "start": "cargo run"
+    }
+  }
+}

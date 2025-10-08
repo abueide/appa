@@ -1,0 +1,12 @@
+[package]
+name = "appa"
+version = "0.1.0"
+edition = "2021"
+description = "A CLI tool named appa"
+authors = ["Your Name <your.email@example.com>"]
+
+[[bin]]
+name = "appa"
+path = "src/main.rs"
+
+[dependencies]
