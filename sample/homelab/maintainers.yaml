@@ -1,0 +1,45 @@
+# Appa Maintainers Registry
+# Centralized maintainer definitions referenced by objects
+
+format_version: "1.0"
+
+maintainers:
+  platform-team:
+    name: "Platform Team"
+    email: "platform@homelab.local"
+    website: "https://wiki.homelab.local/teams/platform"
+    contact:
+      slack: "#infrastructure"
+      oncall: "https://pagerduty.com/schedules/platform"
+      matrix: "@platform:homelab.local"
+
+  alice:
+    name: "Alice Johnson"
+    email: "alice@homelab.local"
+    website: "https://alice.dev"
+    contact:
+      github: "alicejohnson"
+      bsky: "alice.bsky.social"
+      matrix: "@alice:homelab.local"
+      slack: "@alice"
+
+  bob:
+    name: "Bob Smith"
+    email: "bob@homelab.local"
+    contact:
+      github: "bobsmith"
+      slack: "@bob"
+
+  security-team:
+    name: "Security Team"
+    email: "security@homelab.local"
+    contact:
+      slack: "#security"
+      oncall: "https://pagerduty.com/schedules/security"
+
+  network-team:
+    name: "Network Team"
+    email: "network@homelab.local"
+    contact:
+      slack: "#network-ops"
+      mattermost: "network-team"

@@ -1,0 +1,68 @@
+# Appa Plugin Configuration
+
+[core]
+# Core plugins that are always loaded
+enabled = ["sops", "git"]
+
+[plugins.sops]
+# SOPS secrets management plugin
+enabled = true
+backend = "age"
+config_file = "secrets.yaml"
+age_key_file = "~/.config/sops/age/keys.txt"
+
+[plugins.bmc]
+# Bare Metal Controller plugin for hardware provisioning
+enabled = true
+default_vendor = "supermicro"
+timeout_seconds = 300
+# Vendor-specific configurations
+vendors.supermicro.driver = "ipmi"
+vendors.dell.driver = "redfish"
+vendors.hp.driver = "redfish"
+
+[plugins.proxmox]
+# Proxmox VE plugin for hypervisor and VM management
+enabled = true
+default_api_port = 8006
+ssl_verify = false  # For self-signed certs in homelab
+api_timeout = 30
+
+[plugins.nix]
+# NixOS configuration management plugin
+enabled = true
+default_channel = "nixos-23.11"
+flake_support = true
+remote_build = false
+
+[plugins.ansible]
+# Ansible configuration management plugin
+enabled = true
+inventory_format = "yaml"
+vault_password_file = "~/.ansible/vault_pass"
+host_key_checking = false
+
+[plugins.docker]
+# Docker container management plugin
+enabled = true
+default_compose_version = "3.8"
+registry_auth = true
+cleanup_dangling = true
+
+[plugins.git]
+# Git integration plugin (core)
+enabled = true
+auto_commit = true
+commit_template = "appa: {action} {object} {name}"
+push_on_commit = false
+
+# Plugin repositories for additional plugins
+[repositories]
+official = "https://github.com/appa-homelab/plugins"
+community = "https://github.com/appa-community/plugins"
+
+# Plugin update settings
+[updates]
+auto_check = true
+check_interval_hours = 24
+auto_update = false  # Manual updates only

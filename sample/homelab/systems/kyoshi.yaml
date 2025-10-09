@@ -1,0 +1,59 @@
+# Kyoshi - Nginx reverse proxy (Avatar Kyoshi was a warrior who protected people)
+name: kyoshi
+description: "Nginx reverse proxy server for routing traffic to internal services"
+format_version: "1.0"
+
+# System-specific properties
+type: system
+system_type: server
+env: prod
+handler: nix
+
+# Hardware specs for Proxmox VM
+hardware:
+  cpu: 2
+  memory: 2GB
+  disk: 20GB
+
+# Network configuration
+network:
+  ip: 10.0.1.10
+  domain: avatar
+  fqdn: kyoshi.avatar
+
+# Proxmox-specific configuration
+proxmox:
+  vm:
+    vm_id: 101
+    template: "nixos-template"
+    node: "iroh"
+
+# Maintainers (references to maintainers.yaml)
+maintainers:
+  - "platform-team"
+  - "alice"
+
+# Tags for organization and selection
+tags:
+  - "server"          # Auto-generated from system_type
+  - "prod"            # Auto-generated from env
+  - "nginx"           # Manual tag
+  - "reverse-proxy"   # Manual tag
+  - "public-facing"   # Manual tag
+
+# Explicitly assigned profiles (no automatic assignment)
+profiles: [nginx-proxy, production, ssh-access]
+
+# Handler-specific configuration
+handler_config:
+  channel: "nixos-23.11"
+
+# Services this server provides
+services:
+  - name: nginx
+    port: 80
+    public: true
+  - name: nginx-ssl
+    port: 443
+    public: true
+

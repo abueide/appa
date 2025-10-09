@@ -1,0 +1,58 @@
+# Aang - Headscale VPN coordinator (Avatar Aang brought peace and unity)
+name: aang
+description: "Headscale VPN coordinator for mesh networking"
+format_version: "1.0"
+
+# System-specific properties
+type: system
+system_type: server
+env: prod
+handler: nix
+
+# Hardware specs for Proxmox VM
+hardware:
+  cpu: 1
+  memory: 1GB
+  disk: 10GB
+
+# Network configuration
+network:
+  ip: 10.0.1.20
+  domain: avatar
+  fqdn: aang.avatar
+
+# Proxmox-specific configuration
+proxmox:
+  vm:
+    vm_id: 102
+    template: "nixos-template"
+    node: "iroh"
+
+# Maintainers (references to maintainers.yaml)
+maintainers:
+  - "platform-team"
+  - "network-team"  # VPN coordination requires network team
+
+# Tags for organization and selection
+tags:
+  - "server"       # Auto-generated from system_type
+  - "prod"         # Auto-generated from env
+  - "headscale"    # Manual tag
+  - "vpn"          # Manual tag
+  - "coordination" # Manual tag
+
+# Explicitly assigned profiles
+profiles: [headscale, production, ssh-access]
+
+# Handler-specific configuration
+handler_config:
+  channel: "nixos-23.11"
+
+# Services this server provides
+services:
+  - name: headscale
+    port: 8080
+    internal: true
+  - name: headscale-grpc
+    port: 50443
+    internal: true

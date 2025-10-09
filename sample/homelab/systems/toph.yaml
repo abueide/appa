@@ -1,0 +1,67 @@
+# Toph - Docker host (Toph was strong and could handle anything - perfect for containerization)
+name: toph
+description: "Docker container host running GitLab and WikiJS services"
+format_version: "1.0"
+
+# System-specific properties
+type: system
+system_type: server
+env: prod
+handler: ansible
+
+# Hardware specs for Proxmox VM (larger for running containers)
+hardware:
+  cpu: 4
+  memory: 8GB
+  disk: 100GB
+
+# Network configuration
+network:
+  ip: 10.0.1.30
+  domain: avatar
+  fqdn: toph.avatar
+
+# Proxmox-specific configuration
+proxmox:
+  vm:
+    vm_id: 103
+    template: "ubuntu-server-template"
+    node: "iroh"
+
+# Maintainers (references to maintainers.yaml)
+maintainers:
+  - "platform-team"
+  - "bob"  # Bob manages the GitLab and Wiki services
+
+# Tags for organization and selection
+tags:
+  - "server"      # Auto-generated from system_type
+  - "prod"        # Auto-generated from env
+  - "docker"      # Manual tag
+  - "containers"  # Manual tag
+  - "gitlab"      # Manual tag
+  - "wiki"        # Manual tag
+
+# Explicitly assigned profiles
+profiles: [docker-host, gitlab, wikijs, production, ssh-access]
+
+# Handler-specific configuration (using Ansible for Docker setup)
+handler_config:
+  ansible_host: "toph.avatar"
+  ansible_user: "ubuntu"
+
+# Services this server provides (via containers)
+services:
+  - name: gitlab
+    port: 3000
+    internal: true
+    container: "gitlab/gitlab-ce"
+    domain: "gitlab.avatar"
+  - name: wikijs
+    port: 3001
+    internal: true
+    container: "requarks/wiki"
+    domain: "wiki.avatar"
+  - name: docker
+    port: 2376
+    internal: true

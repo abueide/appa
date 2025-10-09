@@ -1,0 +1,14 @@
+# Appa Configuration
+format = "yaml"
+default_backend = "nix"
+
+[ldap]
+server = "ldap.home.lab"
+base_dn = "dc=home,dc=lab"
+bind_dn = "cn=appa,ou=services,dc=home,dc=lab"
+# bind_password should be set via environment variable APPA_LDAP_PASSWORD
+
+[git]
+auto_commit = true
+author_name = "Appa CLI"
+author_email = "appa@home.lab"

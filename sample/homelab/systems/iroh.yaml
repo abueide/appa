@@ -1,0 +1,96 @@
+# Iroh - Proxmox hypervisor node (General Iroh was wise and powerful, perfect for managing other systems)
+name: iroh
+description: "Proxmox VE hypervisor node hosting virtual machines"
+format_version: "1.0"
+
+# System-specific properties
+type: system
+system_type: hypervisor
+env: prod
+handler: ansible  # Initial setup after BMC provisioning
+
+# Hardware specs for physical server
+hardware:
+  cpu: 16
+  memory: 64GB
+  disk: 2TB
+  architecture: x86_64
+  # BMC network configuration
+  bmc:
+    ip: 10.0.0.5
+    mac: "aa:bb:cc:dd:ee:ff"
+    vendor: "supermicro"
+
+# Network configuration
+network:
+  ip: 10.0.1.5
+  domain: avatar
+  fqdn: iroh.avatar
+
+# Maintainers (references to maintainers.yaml)
+maintainers:
+  - "platform-team"
+  - "security-team"  # BMC requires security team oversight
+
+# Tags (auto-generated + manual)
+tags:
+  - "hypervisor"      # Auto-generated from system_type
+  - "prod"            # Auto-generated from env
+  - "proxmox-host"    # Manual tag for plugin identification
+  - "infrastructure"  # Manual tag
+  - "bare-metal"      # Manual tag for BMC plugin
+
+# Explicitly assigned profiles
+profiles: [proxmox-host, production, ssh-access]
+
+# Proxmox-specific configuration (used by proxmox plugin)
+proxmox:
+  host:
+    cluster_name: "avatar-cluster"
+    datacenter: "avatar-dc"
+    api_port: 8006
+    auth:
+      realm: "pam"
+      username: "root"
+      # Password/token referenced from secrets.yaml
+      token_secret: "secrets://proxmox/api_token"
+    storage:
+      - name: "local"
+        type: "dir"
+        path: "/var/lib/vz"
+      - name: "local-lvm"
+        type: "lvmthin"
+        vgname: "pve"
+        thinpool: "data"
+
+# BMC provisioning configuration (used by bmc plugin)
+bmc:
+  install_image: "proxmox-ve-8.1-iso"
+  boot_mode: "uefi"
+  raid_config: "raid1"
+  post_install:
+    # Basic SSH setup before ansible takes over
+    ssh_keys:
+      - "secrets://ssh/admin"
+    packages:
+      - "qemu-guest-agent"
+      - "curl"
+
+# Services this hypervisor provides
+services:
+  - name: proxmox-web
+    port: 8006
+    internal: true
+  - name: proxmox-cluster
+    port: 22006
+    internal: true
+  - name: spice-proxy
+    port: 3128
+    internal: true
+
+# VMs hosted on this node (references)
+hosted_vms:
+  - kyoshi  # VM 101
+  - aang    # VM 102
+  - toph    # VM 103
+
