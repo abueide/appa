@@ -1,0 +1,48 @@
+name: toph
+description: "container host running GitLab and WikiJS services"
+format_version: "1.0"
+
+# System-specific properties
+type: system
+system_type: server
+env: prod
+handler: ansible
+
+# Hardware specs for Proxmox VM (larger for running containers)
+hardware:
+  cpu: 4
+  memory: 8GB
+  disk: 100GB
+
+# Network configuration
+network:
+  ip: 10.0.1.30
+  domain: avatar
+  fqdn: toph.avatar
+
+# Proxmox-specific configuration
+proxmox:
+  vm:
+    vm_id: 103
+    template: "ubuntu-server-template"
+    node: "iroh"
+
+# Maintainers (references to maintainers.yaml)
+maintainers:
+  - "platform-team"
+  - "bob"  # Bob manages the GitLab and Wiki services
+
+# Tags for organization and selection
+tags:
+  - "server"      # Auto-generated from system_type
+  - "prod"        # Auto-generated from env
+  - "containers"  # Manual tag
+  - "gitlab"      # Manual tag
+  - "wiki"        # Manual tag
+
+# Explicitly assigned profiles
+profiles: [gitlab, wikijs, production, ssh-access]
+
+handler_config:
+  ansible_host: "toph.avatar"
+  ansible_user: "ubuntu"
