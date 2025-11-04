@@ -8,6 +8,7 @@ enabled = ["sops", "git"]
 # SOPS secrets management plugin
 enabled = true
 backend = "age"
+repository = "github"
 config_file = "secrets.yaml"
 age_key_file = "~/.config/sops/age/keys.txt"
 

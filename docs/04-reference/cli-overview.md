@@ -1,10 +1,24 @@
-# CLI Commands
+# CLI Commands Overview
 
-The `appa` CLI provides the main entry point for homelab infrastructure management. This page covers the root command structure and links to detailed subcommand documentation.
+The `appa` CLI provides the main entry point for homelab infrastructure management. This page covers the root command structure and links to detailed command documentation for each object type.
 
-## Overview
+## Command Structure
 
 The appa CLI uses a consistent `<object> <verb> <name>` command structure where object names are positional arguments. This provides object-specific context and allows tailored operations with object-specific defaults.
+
+```bash
+appa <object> <verb> [name] [flags]
+```
+
+## Object Commands
+
+### Core Infrastructure Objects
+- **[System Commands](cli-system.md)** - Physical and virtual machine management
+- **[Profile Commands](cli-profile.md)** - Reusable configuration template management
+- **[Module Commands](cli-module.md)** - Backend-specific configuration management
+- **[Plugin Commands](cli-plugin.md)** - Runtime extension management
+- **[Policy Commands](cli-policy.md)** - Access control and enforcement rules
+- **[Secret Commands](cli-secret.md)** - Encrypted credential management
 
 ## Flag Conventions
 
@@ -33,137 +47,7 @@ appa [global-options] <command> [command-options]
 --version            # Show version information
 ```
 
-## Object Operations
-
-All operations follow the `appa <object> <verb>` pattern, allowing object-specific context and tailored operations.
-
-### System Operations
-
-```bash
-# Create new system
-appa system add web-01 --type=server --env=prod --handler=nix
-
-# List systems
-appa system list
-appa system list --env=prod --type=server
-appa system list --tag=nginx --maintainer=alice
-
-# Show system information
-appa system show web-01
-appa system show web-01 --format=json
-
-# Remove system
-appa system remove web-01
-appa system remove web-01 --force
-
-# Modify system properties
-appa system set web-01 --env=staging --handler=ansible
-
-# Edit system configuration
-appa system edit web-01
-
-# Tag management
-appa system set web-01 --tag+=critical
-appa system set web-01 --tag-=testing
-appa system show web-01 --tags
-
-# Profile management
-appa system set web-01 --profile+=nginx-proxy
-appa system set web-01 --profile-=monitoring
-appa system show web-01 --profiles
-
-# Maintainer management
-appa system set web-01 --maintainer+=alice
-appa system set web-01 --maintainer-=bob
-appa system show web-01 --maintainers
-
-# Validation and deployment
-appa system validate web-01
-appa system deploy web-01 --validate
-appa system test web-01 --module=web-server
-```
-
-### Profile Operations
-
-```bash
-# Create new profile
-appa profile add nginx-proxy --description="Nginx reverse proxy configuration"
-
-# List profiles
-appa profile list
-appa profile list --tag=web --unused
-
-# Show profile information
-appa profile show nginx-proxy
-
-# Remove profile
-appa profile remove nginx-proxy
-
-# Edit profile configuration
-appa profile edit nginx-proxy
-
-# Validate profile
-appa profile validate nginx-proxy
-
-# Show which systems use this profile
-appa profile show nginx-proxy --systems
-
-# Module management
-appa profile set nginx-proxy --module+=web-server
-appa profile set nginx-proxy --module-=old-web-config
-appa profile show nginx-proxy --modules
-```
-
-### Module Operations
-
-```bash
-# Create new module
-appa module add web-server --handler=nix --description="Web server configuration"
-
-# List modules
-appa module list
-appa module list --handler=nix
-
-# Show module information
-appa module show web-server
-
-# Remove module
-appa module remove web-server
-
-# Edit module definition
-appa module edit web-server
-
-# Validate module structure
-appa module validate web-server
-
-# Test module against systems
-appa module test web-server --system=web-01
-appa module test web-server --dry-run
-
-# Show module usage
-appa module show web-server --profiles
-appa module show web-server --systems
-```
-
 ## Global Operations
-
-### Validation
-
-```bash
-# Validate everything
-appa validate all
-
-# Validate specific object types
-appa validate systems
-appa validate profiles
-appa validate modules
-appa validate policies
-
-# Validate with specific checks
-appa validate --check=references     # Check cross-references
-appa validate --check=maintainers    # Check maintainer assignments
-appa validate --check=secrets        # Check secret references
-```
 
 ### Deployment
 
@@ -235,6 +119,38 @@ appa stats --by-type
 appa stats --by-maintainer
 ```
 
+### Maintainer Operations
+
+```bash
+# List all registered maintainers
+appa maintainer list
+appa maintainer show alice
+
+# Add new maintainer
+appa maintainer add charlie \
+  --name="Charlie Wilson" \
+  --email="charlie@homelab.local" \
+  --github="charliewilson"
+
+# Add team maintainer
+appa maintainer add devops-team \
+  --name="DevOps Team" \
+  --email="devops@homelab.local" \
+  --slack="#devops"
+
+# Update maintainer information
+appa maintainer set alice --slack="@alice-new"
+appa maintainer add-contact alice --discord="alice#1234"
+
+# Validate maintainers
+appa maintainer validate
+appa maintainer check-references
+appa maintainer references alice
+
+# Remove maintainer
+appa maintainer remove charlie
+```
+
 ## Configuration Commands
 
 ### Global Configuration
@@ -251,23 +167,6 @@ appa config set default_handler nix
 # Reset configuration
 appa config reset
 appa config reset ldap.server
-```
-
-### Plugin Configuration
-
-```bash
-# List available plugins
-appa plugin list
-
-# Show plugin information
-appa plugin show sops
-appa plugin info nix
-
-# Install and manage plugins
-appa plugin install bmc
-appa plugin enable ansible
-appa plugin disable docker
-appa plugin configure proxmox
 ```
 
 ## Common Workflows
@@ -313,7 +212,7 @@ appa system deploy web-02
 appa system list --env=prod
 
 # Validate production environment
-appa validate systems --env=prod
+appa system validate --all --env=prod
 
 # Deploy to production
 appa deploy --env=prod --validate
@@ -326,13 +225,13 @@ appa stats --env=prod
 
 ```bash
 # Find systems without maintainers
-appa validate --check=maintainers
+appa system validate --all --check=maintainers
 
 # Find unused profiles
 appa profile list --unused
 
 # Check for broken references
-appa validate --check=references
+appa system validate --all --check=references
 
 # Clean up orphaned objects
 appa cleanup --dry-run
@@ -377,11 +276,11 @@ appa stats --format=table
 
 ```bash
 # Show detailed validation errors
-appa validate all --verbose
+appa system validate --all --verbose
 
 # Fix validation issues
-appa validate --fix=references
-appa validate --fix=maintainers
+appa system validate --all --fix=references
+appa system validate --all --fix=maintainers
 ```
 
 ### Deployment Errors
@@ -407,7 +306,7 @@ appa profile remove nginx-proxy
 # Error: Profile 'nginx-proxy' is used by systems: web-01, web-02
 
 # Validation failures
-appa web-01 deploy
+appa system deploy web-01
 # Error: System validation failed: missing required profile 'ssh-access'
 ```
 
@@ -443,12 +342,11 @@ export APPA_PROXMOX_TOKEN="secret"
 
 ### Core Subcommands
 
-- **[Secrets](subcommands/secrets.md)** - Encrypted secrets management with SOPS
-- **[Maintainers](subcommands/maintainers.md)** - Centralized maintainer registry management
+- **[Secrets](cli-secret.md)** - Encrypted secrets management with SOPS
+- **Maintainers** - Centralized maintainer registry management (see Maintainer Operations above)
 
 ### Planned Subcommands
 
-- **Plugins** - Plugin installation and management
 - **Config** - Global configuration management
 - **Policy** - Access control and policy validation
 - **Sync** - LDAP synchronization operations

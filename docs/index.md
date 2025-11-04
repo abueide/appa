@@ -2,102 +2,52 @@
 
 Welcome to the Appa documentation. Appa is a CLI tool for homelab infrastructure orchestration and inventory management that acts as an orchestrator, coordinating existing tools rather than replacing them.
 
-## Getting Started
+## Quick Navigation
 
-- **[CLI Commands](cli.md)** - Complete CLI reference and subcommand documentation
-- **[Design Document](design.md)** - Complete overview of Appa's architecture, philosophy, and implementation
-- **[Design Decisions](dd.md)** - Key design decisions with rationale and alternatives considered
+### 🚀 [Getting Started](00-getting-started/)
+New to Appa? Start here for installation, setup, and your first system configuration.
 
-## Core Concepts
+### 📖 [User Guide](01-user-guide/)
+Key concepts, workflows, and practical examples for daily operations.
 
-### Object Types
 
-- **[Objects Overview](objects.md)** - Common properties and patterns shared by all object types
+### 🏗️ [Architecture](02-architecture/)
+Deep dive into Appa's design, object model, and plugin system.
 
-Appa manages five core object types in your homelab:
+### 🔌 [Plugins](03-plugins/)
+Plugin-specific documentation for extending Appa with different backends and services.
 
-- **[Systems](system.md)** - Physical and virtual machines with hardware specs and network configuration
-- **[Profiles](profile.md)** - Reusable configuration templates that reference modules by backend
-- **[Modules](module.md)** - Backend-specific configuration files (Nix, Ansible, Docker, shell scripts)
-- **[Policies](policy.md)** - Access control rules and profile enforcement policies
-- **[Secrets](secret.md)** - SOPS-encrypted sensitive data referenced via `secrets://` URIs
+### 📚 [Reference](04-reference/)
+Complete CLI command reference, subcommands, examples, and troubleshooting.
 
-### Plugin Architecture
+**Quick CLI Access:**
+- [CLI Reference](04-reference/cli-reference.md) - Complete command documentation
+- [System Commands](04-reference/cli-system.md) - Infrastructure management
+- [Plugin Commands](04-reference/cli-plugin.md) - Extension management
 
-Appa uses plugins to extend functionality for specific backends and services:
+### 📝 [Contributing](05-contributing/)
+Guidelines for contributing to documentation and maintaining consistency.
 
-#### Core Infrastructure Plugins
-- **[SOPS Plugin](plugins/sops.md)** - Encrypted secrets management using Mozilla SOPS
-- **[BMC Plugin](plugins/bmc.md)** - Bare metal power management via IPMI/Redfish
-- **[PXE Plugin](plugins/pxe.md)** - Network boot and OS installation for bare metal and VMs
-- **[LDAP Plugin](plugins/ldap.md)** - LDAP/FreeIPA integration for infrastructure groups
+---
 
-#### Virtualization Plugins
-- **[Proxmox Plugin](plugins/proxmox.md)** - Hypervisor and VM lifecycle management
+## What is Appa?
 
-#### Configuration Management Plugins
-- **[Nix Plugin](plugins/nix.md)** - NixOS configuration management
-- **[Ansible Plugin](plugins/ansible.md)** - Playbook-based configuration
-- **[Docker Plugin](plugins/docker.md)** - Container orchestration
+Appa is a homelab infrastructure management CLI that:
 
-## Key Features
+- **Orchestrates existing tools** (Nix, Ansible, Docker, K8s) rather than replacing them
+- **Provides a file-based source of truth** for systems, profiles, and policies
+- **Uses a plugin architecture** for extensibility with different backends
+- **Integrates with LDAP/FreeIPA** for infrastructure group management
+- **Assumes mesh networking** with Tailscale-inspired ACL system
 
-### CLI Design
-- **Consistent command structure**: `appa <object> <verb> [name]` pattern with object names as positional arguments
-- **Global naming**: All objects have globally unique names
-- **Explicit profile assignment**: Manual profile assignment prevents accidental configuration changes
+## Core Object Types
 
-### Infrastructure as Code
-- **File-based source of truth**: Human-readable YAML files
-- **VCS-friendly**: Diffable configuration files designed for version control
-- **Pure declarative**: No conditional logic in configuration files
-
-### Integration Strategy
-- **Orchestrator, not implementer**: Coordinates existing tools (Nix, Ansible, Docker, K8s)
-- **Plugin-based extensibility**: Modular architecture for different backends
-- **Bootstrap workflow**: BMC + PXE plugins provision systems, then hand off to configuration management
-
-### Security and Access Control
-- **Zero trust by default**: Explicit permissions required (Tailscale-inspired ACL system)
-- **LDAP integration**: One-way sync to LDAP/FreeIPA for infrastructure groups
-- **Encrypted secrets**: SOPS integration for secure credential management
-
-## Documentation Structure
-
-```
-docs/
-├── index.md                    # This overview (you are here)
-├── cli.md                      # CLI commands and subcommand reference
-├── design.md                   # Complete design document
-├── dd.md                       # Design decisions and rationale
-├── objects.md                  # Common object properties and patterns
-├── system.md                   # Physical/virtual machine definitions
-├── profile.md                  # Configuration templates
-├── module.md                   # Backend-specific configurations
-├── policy.md                   # Access control and enforcement
-├── secret.md                   # Encrypted configuration values
-├── modules/                    # Module-specific documentation
-│   └── module-interface.md     # Module interface and plugin handler system
-├── subcommands/                # CLI subcommand documentation
-│   └── maintainers.md          # Maintainer management commands
-└── plugins/                    # Plugin-specific documentation
-    ├── sops.md                # Secrets management
-    ├── bmc.md                 # Bare metal provisioning
-    ├── pxe.md                 # Network boot and installation
-    ├── ldap.md                # LDAP/FreeIPA integration
-    ├── proxmox.md             # Hypervisor management
-    ├── nix.md                 # NixOS configuration
-    ├── ansible.md             # Ansible playbooks
-    └── docker.md              # Container orchestration
-```
-
-## Example Configuration
-
-See the [sample homelab](../sample/homelab/) directory for complete examples including:
-- Avatar-themed system configurations (kyoshi, aang, toph, iroh)
-- Production and development environment setups
-- Plugin configurations and SOPS-encrypted secrets
-- Profile definitions and policy examples
+- **[Systems](01-user-guide/managing-systems.md)** - Physical and virtual machines
+- **[Profiles](01-user-guide/profile.md)** - Reusable configuration templates
+- **[Modules](01-user-guide/modules.md)** - Backend-agnostic service configuration
+- **[Plugins](04-reference/cli-plugin.md)** - Runtime-loadable extensions that add new subcommands
+- **[Policies](01-user-guide/policy.md)** - Access control rules
+- **[Secrets](01-user-guide/secret.md)** - Encrypted sensitive data
 
 ## Development Status
 
